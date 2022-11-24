@@ -21,11 +21,15 @@ const colors = [{
 export default function ColorPicker () {
   const [backgroundColor, setBackgroundColor] = useState('white')
 
+  const onClick = (hex) => {
+    setBackgroundColor(hex)
+  }
+
   return (
     <div className='page' style={{ backgroundColor }}>
       {
         colors.map(color => (
-          <Color key={color.hex} hex={color.hex} name={color.name} />
+          <Color key={color.hex} hex={color.hex} name={color.name} onClick={onClick} />
         ))
       }
     </div>
