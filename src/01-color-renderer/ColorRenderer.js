@@ -22,7 +22,7 @@ export default function ColorRenderer () {
     <>
       {
         colors.map(color =>
-          <Color hex={color.hex} name={color.name} />
+          <Color key={color.hex} hex={color.hex} name={color.name} />
         )
       }
     </>
