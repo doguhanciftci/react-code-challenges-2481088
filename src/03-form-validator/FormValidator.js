@@ -15,7 +15,7 @@ export default function FormValidator () {
       return;
     }
 
-    if (email.includes('@') === false) {
+    if (email.split('@').length !== 2) {
       setError('Please enter a valid email!');
       return;
     }
