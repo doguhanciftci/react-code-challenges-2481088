@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react';
 
 const items = [{
   name: 'apple',
@@ -12,7 +12,29 @@ const items = [{
 }]
 
 function ShoppingCart () {
-  const cart = [{ name: 'apple', quantity: 3, price: 0.39 }]
+
+  const [cart, setCart] = useState([{ name: 'apple', quantity: 3, price: 0.39 }])
+
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(cart.reduce((sum, c) => sum + (c.price * c.quantity), 0));
+  }, [cart]);
+
+  const alterCart = (item, offset) => {
+    const existingItem = cart.find(c => c.name === item.name);
+
+    if (!existingItem) {
+      offset > 0 && setCart([...cart, { ...item, quantity: offset }]);
+      return;
+    }
+
+    const newQuantity = existingItem.quantity + offset;
+    if (newQuantity === 0)
+      setCart(cart.filter(c => c.name !== item.name));
+    else
+      setCart(cart.map(c => c.name === item.name ? { ...c, quantity: newQuantity } : c))
+  }
 
   return (
     <div>
@@ -24,7 +46,7 @@ function ShoppingCart () {
             <div key={item.name}>
               <h3>{item.name}</h3>
               <p>${item.price}</p>
-              <button>Add to Cart</button>
+              <button onClick={() => alterCart(item, 1)}>Add to Cart</button>
             </div>)
           )}
         </div>
@@ -34,17 +56,17 @@ function ShoppingCart () {
             <div key={item.name}>
               <h3>{item.name}</h3>
               <p>
-                <button>-</button>
+                <button onClick={() => alterCart(item, -1)}>-</button>
                 {item.quantity}
-                <button>+</button>
+                <button onClick={() => alterCart(item, 1)}>+</button>
               </p>
-              <p>Subtotal: ${item.quantity * item.price}</p>
+              <p>Subtotal: ${(item.quantity * item.price).toFixed(2)}</p>
             </div>
           ))}
         </div>
       </div>
       <div className='total'>
-        <h2>Total: $0.00</h2>
+        <h2>Total: ${total.toFixed(2)}</h2>
       </div>
     </div>
   )
